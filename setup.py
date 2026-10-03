@@ -1,7 +1,8 @@
-__author__ = 'gauri'
+"""Create the local SQLite schema used by the scheduler."""
 
-from sqlalchemy import create_engine
+from duty_app import app
 
-engine = create_engine("mysql://root:root123@localhost",echo=True)
-engine.execute("CREATE DATABASE IF NOT EXISTS duty_scheduler")
-engine.execute("CREATE DATABASE IF NOT EXISTS duty_scheduler_test")
+
+if __name__ == "__main__":
+    app.extensions["scheduler_store"]._ensure_schema()
+    print("Scheduler database is ready.")

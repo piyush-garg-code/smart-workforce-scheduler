@@ -1,17 +1,22 @@
+"""Application factory for Smart Workforce Scheduler."""
+
+from pathlib import Path
+import os
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
+from .storage import SchedulerStore
+from .web import api
 
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root123@localhost/duty_scheduler'
+def create_app(database_path=None):
+    app = Flask(__name__)
+    app.config["DATABASE_PATH"] = database_path or os.getenv(
+        "SCHEDULER_DATABASE", str(Path("data") / "scheduler.sqlite3")
+    )
+    app.extensions["scheduler_store"] = SchedulerStore(app.config["DATABASE_PATH"])
+    app.register_blueprint(api)
+    return app
 
-db = SQLAlchemy()
 
-from routes import duty_api
-app.register_blueprint(duty_api)
-
-db.app = app
-db.init_app(app)
-
-# Create tables for corresponding models defined above
-db.create_all()
+app = create_app()

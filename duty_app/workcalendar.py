@@ -1,16 +1,37 @@
-__author__ = 'gauri'
+"""Business-day calculations without an external calendar dependency."""
 
-from datetime import timedelta
-from workalendar.usa import California
+from datetime import date, timedelta
 
-# Function to account for holidays/weekends
-# If the current day is working day it returns current day otherwise returns the next working day
-def get_working_day(working_date):
-    cal = California()
-    holidays = cal.holidays(working_date.year)
-    holiday_dates = []
-    for holiday in holidays:
-        holiday_dates.append(holiday[0])
-    while working_date.weekday() > 4 or working_date in holiday_dates:
-        working_date = working_date + timedelta(days=1)
-    return working_date
+
+def _observed_holidays(year):
+    fixed = ((1, 1), (7, 4), (12, 25))
+    holidays = set()
+    for month, day in fixed:
+        holiday = date(year, month, day)
+        if holiday.weekday() == 5:
+            holidays.add(holiday - timedelta(days=1))
+        elif holiday.weekday() == 6:
+            holidays.add(holiday + timedelta(days=1))
+        else:
+            holidays.add(holiday)
+    return holidays
+
+
+def is_business_day(day):
+    return day.weekday() < 5 and day not in _observed_holidays(day.year)
+
+
+def next_business_day(day):
+    while not is_business_day(day):
+        day += timedelta(days=1)
+    return day
+
+
+def business_days(start, count):
+    result = []
+    cursor = start
+    while len(result) < count:
+        cursor = next_business_day(cursor)
+        result.append(cursor)
+        cursor += timedelta(days=1)
+    return result

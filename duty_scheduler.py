@@ -1,4 +1,7 @@
+"""Development entry point."""
+
 from duty_app import app
 
-if __name__ == '__main__':
-    app.run(debug=1)
+
+if __name__ == "__main__":
+    app.run(debug=True)
