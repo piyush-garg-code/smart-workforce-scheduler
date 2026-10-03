@@ -33,6 +33,7 @@ The runtime implementation was replaced rather than cosmetically renamed:
 
 - New Flask application factory and route module.
 - New SQLite schema and storage boundary.
+- Versioned `schema.sql` with indexes for the persistence model.
 - New business-day and rotation algorithm.
 - New API contract under `/api`.
 - New CLI, sample data, tests, requirements, and README.

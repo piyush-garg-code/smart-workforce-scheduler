@@ -8,13 +8,15 @@ analytics. The current implementation is maintained by Piyush Garg.
 
 - `duty_app/__init__.py` exposes a Flask application factory.
 - `duty_app/storage.py` is the persistence boundary and owns the SQLite schema.
+- `schema.sql` is the versioned SQL schema for the SQLite database.
 - `duty_app/workcalendar.py` provides business-day calculations.
 - `duty_app/web.py` contains the HTTP API.
 - `cli.py` is a dependency-light command-line client.
 
 The database contains two tables: `assignments` (one worker per duty date) and
-`time_off` (worker/date exceptions). SQLite keeps local development simple and
-avoids hardcoded credentials.
+`time_off` (worker/date exceptions), plus indexes for common lookups. The
+versioned SQL schema is applied automatically at startup. SQLite keeps local
+development simple and avoids hardcoded credentials.
 
 ## Scheduling algorithm
 
