@@ -1,0 +1,103 @@
+Smart Workspace Scheduler
+=========================
+
+Project Description:
+This is a Duty Scheduler application developed in Python Flask and MySQL.
+duty_app directory contains API routes and models defined using Flask framework to interact with MySQL database using SQLAlchemy.
+schedule information is stored in MySQL database.
+cli.py is a Command Line Interface provided to interact with users. It uses APIs defined in the duty_app
+Used 'workalendar' toolkit for California holidays. https://github.com/novapost/workalendar
+
+Maintainer
+----------
+Maintained by Piyush Garg (GitHub: `piyush-garg-code`).
+
+This repository is a maintained migration of the original project. Existing
+author attribution in the source files and the original project references are
+preserved.
+
+Assumptions:
+1. User provides starting order which is used by the application to initialize the schedule.
+   If user re-initializes, the new schedule replaces the existing schedule.
+2. If the user marks a day as undoable using 'reschedule' option on CLI, he will be replaced by another user
+   from future schedules if possible without conflicts.
+3. Schedules can be swapped only between future schedules.
+4. 'month' option in CLI displays schedules for current month (1st day of the month - last day of the month).
+
+To run the project:
+1. pip install -requirements.txt
+2. Setup database and tables.
+   python setup.py
+3. Run tests
+   python tests.py
+4. Start the API server.
+   python duty_scheduler.py
+5. Use cli:
+   python cli.py -h
+
+Examples:
+
+> python cli.py -h
+usage: cli.py [-h] [-t] [-m] [-i INITIALIZE [INITIALIZE ...]] [-u USER]
+              [-s SWAP [SWAP ...]] [-r RESCHEDULE [RESCHEDULE ...]]
+
+Duty Scheduler
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t, --today           Displays today's Support Hero
+  -m, --month           Displays schedule for all users in current month
+  -i INITIALIZE [INITIALIZE ...], --initialize INITIALIZE [INITIALIZE ...]
+                        Initialize the schedule with starting order
+                        Usage: cli -i <user1 user2 user3 user4 ...>
+  -u USER, --user USER  Displays user's schedule
+  -s SWAP [SWAP ...], --swap SWAP [SWAP ...]
+                        The date should be in YYYY-mm-dd format.
+                        Usage: cli -s <user1 date1 user2 date2>
+  -r RESCHEDULE [RESCHEDULE ...], --reschedule RESCHEDULE [RESCHEDULE ...]
+                        Usage: cli -s <user1 date1>. Mark as undoable and
+                        reschedule to new date.
+
+
+> python cli.py -i Sherry  Boris  Vicente  Matte  Jack  Sherry   Matte  Kevin  Kevin  Vicente  Zoe  Kevin   Matte  Zoe  Jay  Boris  Eadon  Sherry
+Success
+
+> python cli.py -m
+2015-03-02 Sherry
+2015-03-03 Boris
+2015-03-04 Vicente
+2015-03-05 Matte
+2015-03-06 Jack
+2015-03-09 Sherry
+2015-03-10 Matte
+2015-03-11 Kevin
+2015-03-12 Kevin
+2015-03-13 Vicente
+2015-03-16 Zoe
+2015-03-17 Kevin
+2015-03-18 Matte
+2015-03-19 Zoe
+2015-03-20 Jay
+2015-03-23 Boris
+2015-03-24 Eadon
+2015-03-25 Sherry
+
+> python cli.py -u Kevin
+Schedule for Kevin
+2015-03-03
+2015-03-16
+2015-03-17
+
+> python cli.py -s Kevin 2015-03-12 Zoe 2015-03-16
+Success
+
+> python cli.py -r Kevin 2015-03-11
+Success. swapped schedules:
+Boris 2015-03-11
+Kevin 2015-03-03
+
+
+References:
+http://flask.pocoo.org
+http://pythonhosted.org/Flask-SQLAlchemy/
+https://github.com/novapost/workalendar
